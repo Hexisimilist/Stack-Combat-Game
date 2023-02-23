@@ -1,25 +1,31 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Stack_Combat_Game
 {
     public class GameClass
     {
+        [JsonIgnore]
         public int Price { get; private set; }
+        [JsonIgnore]
         private int MaxPrice { get; set; }
         public string? TeamName { get; private set; }
 
         readonly static UnitClass Infantry = new("Infantry", 1, 1, 2, 1);
-        readonly static UnitClass Knight = new("Knight", 2, 2, 2, 2);
-        readonly static UnitClass Cavalry = new("Cavalry", 3, 3, 10, 3);
+        readonly static UnitClass Knight = new("Heavy Infantry", 2, 2, 2, 2);
+        readonly static UnitClass Cavalry = new("Knight", 3, 3, 10, 3);
 
-        private List<GameClass> _units;
-        public IList<GameClass> Units
+        public UnitClass[] UnitDescriptions { get; set; }
+        public int[] Units { get; private set; }
+
+        [JsonIgnore]
+        private List<UnitClass> _units;
+        [JsonIgnore]
+        public IList<UnitClass> UnitsList
         {
             get
             {
-                if (_units is not null)
-                    return _units.AsReadOnly();
-                return _units;
+                return _units.AsReadOnly();
             }
         }
 
@@ -27,13 +33,19 @@ namespace Stack_Combat_Game
         {
             TeamName = teamName;
             MaxPrice = maxPrice;
-            _units = new List<GameClass>();
+            _units = new List<UnitClass>();
+            UnitDescriptions = new UnitClass[] { Infantry, Knight, Cavalry };
+            Units = new int[0];
         }
 
-        public string Serializing()
+        /*public void Serializing()
         {
-            return JsonSerializer.Serialize<UnitClass>((UnitClass)_units[0]);
-        }
+            string fileName = "Units.json";
+            List<string> jsonstring = new();
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            jsonstring.Add(JsonSerializer.Serialize(UnitDescriptions, options));
+            File.WriteAllLines(fileName, jsonstring);
+        }*/
 
         GameClass()
         {
@@ -64,7 +76,7 @@ namespace Stack_Combat_Game
             if (unitNum >= 0 && unitNum < _units.Count)
             {
                 UnitClass unit = (UnitClass)_units[unitNum];
-                return unit.MaxHP;
+                return unit.HitPoints;
             }
             else
                 return -1;
@@ -97,7 +109,7 @@ namespace Stack_Combat_Game
             if (unitNum >= 0 && unitNum < _units.Count)
             {
                 UnitClass unit = (UnitClass)_units[unitNum];
-                return unit.Name;
+                return unit.UnitName;
             }
             else
                 return "Unknown";
@@ -119,10 +131,14 @@ namespace Stack_Combat_Game
         {
             for (int i = 0; i < count; i++)
             {
-                if (Price + unit.Defense + unit.Attack + unit.MaxHP <= MaxPrice)
+                if (Price + unit.Defense + unit.Attack + unit.HitPoints <= MaxPrice)
                 {
-                    Price += Price + unit.Defense + unit.Attack + unit.MaxHP;
+                    Price += Price + unit.Defense + unit.Attack + unit.HitPoints;
                     _units.Add((UnitClass)unit.Clone());
+                    int[] units = Units;
+                    Array.Resize(ref units, Units.Length + 1);
+                    Units = units;
+                    Units[^1] = unit.UnidDescriptionId;
                     continue;
                 }
                 break;
@@ -139,24 +155,25 @@ namespace Stack_Combat_Game
             }
         }
 
-        private sealed class UnitClass : GameClass, ICloneable
+        public sealed class UnitClass : ICloneable
         {
-            public int Id { get; }
-            public string Name { get; }
+            public int UnidDescriptionId { get; }
+            public string UnitName { get; }
             public int Attack { get; }
             public int Defense { get; }
-            public int MaxHP { get; }
+            public int HitPoints { get; }
 
+            [JsonIgnore]
             public int CurrentHP { get; set; }
 
             public UnitClass(string name, int attack, int defense, int hp, int id)
             {
-                Name = name;
+                UnitName = name;
                 Attack = attack;
                 Defense = defense;
-                MaxHP = hp;
-                CurrentHP = MaxHP;
-                Id = id;
+                HitPoints = hp;
+                CurrentHP = HitPoints;
+                UnidDescriptionId = id;
             }
 
             public object Clone()
