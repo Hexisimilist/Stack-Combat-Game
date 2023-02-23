@@ -7,5 +7,4 @@ game.AddCavalry(2);
 var options = new JsonSerializerOptions { WriteIndented = true };
 Console.WriteLine(JsonSerializer.Serialize(game, options));
 
-game.Serializing();
 //Console.WriteLine(game.Serializing());
