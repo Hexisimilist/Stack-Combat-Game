@@ -3,7 +3,7 @@ using System.Text.Json;
 
 GameClass game = new(100, "Ludens");
 
-game.AddCavalry(2);
+game.AddKnight(2);
 var options = new JsonSerializerOptions { WriteIndented = true };
 Console.WriteLine(JsonSerializer.Serialize(game, options));
 
