@@ -5,6 +5,7 @@ namespace Stack_Combat_Game
 {
     public class GameClass
     {
+        static readonly object Instancelock = new();
         [JsonIgnore]
         public int Price { get; private set; }
         [JsonIgnore]
@@ -29,7 +30,44 @@ namespace Stack_Combat_Game
             }
         }
 
-        public GameClass(int maxPrice, string teamName)
+        private static GameClass instance;
+
+        public static GameClass GetInstance()
+        {
+            if (instance == null)
+                throw new Exception("GameClass object has not been initialized!");
+            return instance;
+        }
+
+        public static GameClass GetInstance(int maxPrice, string teamNam)
+        {
+            if (instance == null)
+            {
+                lock (Instancelock)
+                {
+                    instance ??= new GameClass(maxPrice, teamNam);
+                }
+            }
+            return instance;
+        }
+
+        public static GameClass GetInstance(int maxPrice, string teamName, int infantryAttack, int infantryDefense, int infantryHP,
+            int heavyInfatryAttack, int heavyInfantryDefense, int heavyInfantryHP,
+            int knightAttack, int knightDefense, int knightHP)
+        {
+            if (instance == null)
+            {
+                lock (Instancelock)
+                {
+                    instance ??= new GameClass(maxPrice, teamName, infantryAttack, infantryDefense, infantryHP,
+                        heavyInfatryAttack, heavyInfantryDefense, heavyInfantryHP,
+                        knightAttack, knightDefense, knightHP);
+                }
+            }
+            return instance;
+        }
+
+        private GameClass(int maxPrice, string teamName)
         {
             TeamName = teamName;
             MaxPrice = maxPrice;
@@ -40,7 +78,7 @@ namespace Stack_Combat_Game
             Units = Array.Empty<int>();
         }
 
-        public GameClass(int maxPrice, string teamName, int infantryAttack, int infantryDefense, int infantryHP,
+        private GameClass(int maxPrice, string teamName, int infantryAttack, int infantryDefense, int infantryHP,
             int heavyInfatryAttack, int heavyInfantryDefense, int heavyInfantryHP,
             int knightAttack, int knightDefense, int knightHP)
         {
