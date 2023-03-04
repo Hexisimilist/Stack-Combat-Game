@@ -15,9 +15,13 @@ namespace Stack_Combat_Game
         readonly UnitClass Infantry;
         readonly UnitClass HeavyInfantry;
         readonly UnitClass Knight;
+        readonly UnitClass Archer;
+
 
         public UnitClass[] UnitDescriptions { get; set; }
-        public int[] Units { get; private set; }
+
+        [JsonPropertyName("Units")]
+        public int[] UnitsOrder { get; private set; }
 
         [JsonIgnore]
         private List<UnitClass> _units;
@@ -39,13 +43,13 @@ namespace Stack_Combat_Game
             return instance;
         }
 
-        public static GameClass GetInstance(int maxPrice, string teamNam)
+        public static GameClass GetInstance(int maxPrice, string teamNam, params UnitClass[] units)
         {
             if (instance == null)
             {
                 lock (Instancelock)
                 {
-                    instance ??= new GameClass(maxPrice, teamNam);
+                    instance ??= new GameClass(maxPrice, teamNam, units);
                 }
             }
             return instance;
@@ -67,15 +71,21 @@ namespace Stack_Combat_Game
             return instance;
         }
 
-        private GameClass(int maxPrice, string teamName)
+        private GameClass(int maxPrice, string teamName, params UnitClass[] units)
         {
             TeamName = teamName;
             MaxPrice = maxPrice;
             _units = new List<UnitClass>();
-            UnitDescriptions = new UnitClass[] { Infantry = new(1, "Infantry", 1, 1, 2),
-                HeavyInfantry = new(2, "HeavyInfantry", 2, 2, 2),
-                Knight = new(3, "Knight", 3, 3, 10) };
-            Units = Array.Empty<int>();
+            UnitDescriptions = new UnitClass[units.Length];
+            Array.Copy(units, UnitDescriptions, units.Length);
+            UnitsOrder = Array.Empty<int>();
+
+            //TODO Probably to delete the second argument in AddUnit() or to add this variable in parameter of GameClass ctor
+            foreach (var item in units)
+            {
+                AddUnit(item, 1);
+            }
+
         }
 
         private GameClass(int maxPrice, string teamName, int infantryAttack, int infantryDefense, int infantryHP,
@@ -88,7 +98,7 @@ namespace Stack_Combat_Game
             UnitDescriptions = new UnitClass[] { Infantry = new(1, "Infantry", infantryAttack, infantryDefense, infantryHP),
                 HeavyInfantry = new(2, "HeavyInfantry", heavyInfatryAttack, heavyInfantryDefense, heavyInfantryHP),
                 Knight = new(3, "Knight", knightAttack, knightDefense, knightHP)};
-            Units = Array.Empty<int>();
+            UnitsOrder = Array.Empty<int>();
         }
 
         public void ClearDeadUnits()
@@ -99,19 +109,19 @@ namespace Stack_Combat_Game
                 if (GetUnitCurrentHealth(i) <= 0)
                 {
                     _units.RemoveAt(i);
-                    Units[i] = 0;
+                    UnitsOrder[i] = 0;
                     deadUnits++;
                 }
             }
-            int[] temp = new int[Units.Length - deadUnits];
+            int[] temp = new int[UnitsOrder.Length - deadUnits];
             int n = 0;
-            for (int j = 0; j < Units.Length; j++)
+            for (int j = 0; j < UnitsOrder.Length; j++)
             {
-                while (Units[n] == 0)
+                while (UnitsOrder[n] == 0)
                 {
                     n++;
                 }
-                temp[j] = Units[n];
+                temp[j] = UnitsOrder[n];
             }
         }
 
@@ -162,22 +172,39 @@ namespace Stack_Combat_Game
         {
             AddUnit(Knight, count);
         }
+        public void AddArcher(int count)
+        {
+            AddUnit(Archer, count);
+        }
         private void AddUnit(UnitClass unit, int count)
         {
-            for (int i = 0; i < count; i++)
-            {
-                if (Price + unit.Defense + unit.Attack + unit.HitPoints <= MaxPrice)
+            
+                for (int i = 0; i < count; i++)
                 {
-                    Price += Price + unit.Defense + unit.Attack + unit.HitPoints;
-                    _units.Add((UnitClass)unit.Clone());
-                    int[] units = Units;
-                    Array.Resize(ref units, Units.Length + 1);
-                    Units = units;
-                    Units[^1] = unit.UnidDescriptionId;
-                    continue;
+
+                    if (unit is ISpecialAbility)
+                    {
+                        var specialUnit = unit as ISpecialAbility;
+                        Price += Price + unit.Attack + unit.Defense + unit.HitPoints
+                            + (specialUnit.Range + specialUnit.Strength) * 2;
+                    }
+
+                    else
+                    {
+                        Price += Price + unit.Defense + unit.Attack + unit.HitPoints;
+                    }
+
+                    if (Price <= MaxPrice)
+                    {
+                        _units.Add((UnitClass)unit.Clone());
+                        int[] units = UnitsOrder;
+                        Array.Resize(ref units, UnitsOrder.Length + 1);
+                        UnitsOrder = units;
+                        UnitsOrder[^1] = unit.UnidDescriptionId;
+                        continue;
+                    }
+                    throw new Exception("Army Cost doesn't relate to the requirements");
                 }
-                break;
-            }
         }
 
         public void GetAttacked(int unitNum, int damage)
