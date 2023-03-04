@@ -4,8 +4,8 @@ using System.Text.Json;
 
 UnitClass[] units = new[]
 {
-    new UnitClass(1, "Infantry", 10, 5, 20),
     new UnitClass(2, "Knight", 10,5,5),
+    new Healer(new(3,"Healer",20,0,3), 2, 3),
     new Archer(new(3,"Archer",20,0,3), 2, 2)
 };
 

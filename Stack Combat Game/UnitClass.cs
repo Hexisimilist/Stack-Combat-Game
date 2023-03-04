@@ -51,6 +51,27 @@ namespace Stack_Combat_Game_Unit
         public int AbilityType { get; private set; }
     }
 
+    public class Healer : UnitClass, ISpecialAbility
+    {
+        public Healer(UnitClass unit, int range, int strength) : base(
+            unit.UnidDescriptionId,
+            unit.UnitName,
+            unit.Attack,
+            unit.Defense,
+            unit.HitPoints
+            )
+        {
+
+            Range = range;
+            Strength = strength;
+            AbilityType = 2;
+        }
+
+        public int Range { get; private set; }
+        public int Strength { get; private set; }
+        public int AbilityType { get; private set; }
+    }
+
 
 
 
