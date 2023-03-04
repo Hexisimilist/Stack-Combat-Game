@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Stack_Combat_Game;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Stack_Combat_Game_Unit
 {
-    public sealed class UnitClass : ICloneable
+    public class UnitClass : ICloneable
     {
         public int UnidDescriptionId { get; }
         public string UnitName { get; }
@@ -33,4 +29,29 @@ namespace Stack_Combat_Game_Unit
             return this.MemberwiseClone();
         }
     }
+
+    public class Archer : UnitClass, ISpecialAbility
+    {
+        public Archer(UnitClass unit, int range, int strength) : base(
+            unit.UnidDescriptionId,
+            unit.UnitName,
+            unit.Attack,
+            unit.Defense,
+            unit.HitPoints
+            )
+        {
+
+            Range = range;
+            Strength = strength;
+            AbilityType = 1;
+        }
+
+        public int Range { get ; private set; }
+        public int Strength { get; private set; }
+        public int AbilityType { get; private set; }
+    }
+
+
+
+
 }
