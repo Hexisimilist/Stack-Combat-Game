@@ -1,9 +1,20 @@
-﻿namespace Stack_Combat_Game
+﻿using System.Text.Json.Serialization;
+
+namespace Stack_Combat_Game
 {
     internal interface ISpecialAbility
     {
-        public int Range { get;}
-        public int Strength { get;}
-        public int AbilityType { get;}
+        [JsonPropertyName("SpecialAbilityRange")]
+        [JsonPropertyOrder(2)]
+        public int Range { get; }
+
+        [JsonPropertyName("SpecialAbilityStrength")]
+        [JsonPropertyOrder(1)]
+
+        public int Strength { get; }
+
+        [JsonPropertyName("SpecialAbilityType")]
+        [JsonPropertyOrder(0)]
+        public int AbilityType { get; }
     }
 }

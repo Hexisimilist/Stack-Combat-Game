@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Stack_Combat_Game_Unit
 {
+    [JsonConverter(typeof(UnitClassJsonConverter))]
     public class UnitClass : ICloneable
     {
         public int UnidDescriptionId { get; }
