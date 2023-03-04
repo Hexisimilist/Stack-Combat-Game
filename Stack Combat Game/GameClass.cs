@@ -185,16 +185,19 @@ namespace Stack_Combat_Game
                     if (unit is ISpecialAbility)
                     {
                         var specialUnit = unit as ISpecialAbility;
-                        Price += Price + unit.Attack + unit.Defense + unit.HitPoints
+                        Price += unit.Attack + unit.Defense + unit.HitPoints
                             + (specialUnit.Range + specialUnit.Strength) * 2;
                     }
 
                     else
                     {
-                        Price += Price + unit.Defense + unit.Attack + unit.HitPoints;
+                        Price += unit.Defense + unit.Attack + unit.HitPoints;
                     }
 
-                    if (Price <= MaxPrice)
+                Console.WriteLine(Price);
+
+
+                if (Price <= MaxPrice)
                     {
                         _units.Add((UnitClass)unit.Clone());
                         int[] units = UnitsOrder;
