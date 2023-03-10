@@ -34,6 +34,8 @@ namespace Stack_Combat_Game_Unit
         {
             return this.MemberwiseClone();
         }
+
+
     }
 
     public class Archer : UnitClass, ISpecialAbility
@@ -52,12 +54,12 @@ namespace Stack_Combat_Game_Unit
             AbilityType = 1;
         }
 
-        public int Range { get ; private set; }
+        public int Range { get; private set; }
         public int Strength { get; private set; }
         public int AbilityType { get; private set; }
     }
 
-    public class Knight: UnitClass
+    public class Knight : UnitClass
     {
         public Knight(int id, string name, int attack, int defense, int hp) : base(id, name, attack, defense, hp)
         {
@@ -70,7 +72,7 @@ namespace Stack_Combat_Game_Unit
         }
     }
 
-    public class Infantry: UnitClass
+    public class Infantry : UnitClass
     {
         public Infantry(int id, string name, int attack, int defense, int hp) : base(id, name, attack, defense, hp)
         {
@@ -83,8 +85,16 @@ namespace Stack_Combat_Game_Unit
         }
     }
 
-    public class HeavyInfantry: UnitClass
+    public class HeavyInfantry : UnitClass
     {
+
+
+
+
+
+
+
+        #region Bad DRY Example
         public HeavyInfantry(int id, string name, int attack, int defense, int hp) : base(id, name, attack, defense, hp)
         {
             UnitDescriptionId = id;
@@ -94,6 +104,15 @@ namespace Stack_Combat_Game_Unit
             HitPoints = hp;
             CurrentHP = HitPoints;
         }
+        #endregion
+
+        #region Correct DRY Example
+        // public HeavyInfantry(int id, string name, int attack, int defense, int hp) : base(id, name, attack, defense, hp)
+        // {
+            
+        // }
+
+        #endregion
     }
 
     public class Healer : UnitClass, ISpecialAbility
