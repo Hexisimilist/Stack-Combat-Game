@@ -12,11 +12,6 @@ namespace Stack_Combat_Game
         private int MaxPrice { get; set; }
         public string? TeamName { get; private set; }
 
-        readonly UnitClass Infantry;
-        readonly UnitClass HeavyInfantry;
-        readonly UnitClass Knight;
-        readonly UnitClass Archer;
-
 
         public UnitClass[] UnitDescriptions { get; set; }
 
@@ -43,33 +38,33 @@ namespace Stack_Combat_Game
             return instance;
         }
 
-        public static GameClass GetInstance(int maxPrice, string teamNam, params UnitClass[] units)
+        public static GameClass InitializeInstance(int maxPrice, string teamName, params UnitClass[] units)
         {
             if (instance == null)
             {
                 lock (Instancelock)
                 {
-                    instance ??= new GameClass(maxPrice, teamNam, units);
+                    instance ??= new GameClass(maxPrice, teamName, units);
                 }
             }
             return instance;
         }
 
-        public static GameClass GetInstance(int maxPrice, string teamName, int infantryAttack, int infantryDefense, int infantryHP,
-            int heavyInfatryAttack, int heavyInfantryDefense, int heavyInfantryHP,
-            int knightAttack, int knightDefense, int knightHP)
-        {
-            if (instance == null)
-            {
-                lock (Instancelock)
-                {
-                    instance ??= new GameClass(maxPrice, teamName, infantryAttack, infantryDefense, infantryHP,
-                        heavyInfatryAttack, heavyInfantryDefense, heavyInfantryHP,
-                        knightAttack, knightDefense, knightHP);
-                }
-            }
-            return instance;
-        }
+        // public static GameClass GetInstance(int maxPrice, string teamName, int infantryAttack, int infantryDefense, int infantryHP,
+        //     int heavyInfatryAttack, int heavyInfantryDefense, int heavyInfantryHP,
+        //     int knightAttack, int knightDefense, int knightHP)
+        // {
+        //     if (instance == null)
+        //     {
+        //         lock (Instancelock)
+        //         {
+        //             instance ??= new GameClass(maxPrice, teamName, infantryAttack, infantryDefense, infantryHP,
+        //                 heavyInfatryAttack, heavyInfantryDefense, heavyInfantryHP,
+        //                 knightAttack, knightDefense, knightHP);
+        //         }
+        //     }
+        //     return instance;
+        // }
 
         private GameClass(int maxPrice, string teamName, params UnitClass[] units)
         {
@@ -88,25 +83,25 @@ namespace Stack_Combat_Game
 
         }
 
-        private GameClass(int maxPrice, string teamName, int infantryAttack, int infantryDefense, int infantryHP,
-            int heavyInfatryAttack, int heavyInfantryDefense, int heavyInfantryHP,
-            int knightAttack, int knightDefense, int knightHP)
-        {
-            TeamName = teamName;
-            MaxPrice = maxPrice;
-            _units = new List<UnitClass>();
-            UnitDescriptions = new UnitClass[] { Infantry = new(1, "Infantry", infantryAttack, infantryDefense, infantryHP),
-                HeavyInfantry = new(2, "HeavyInfantry", heavyInfatryAttack, heavyInfantryDefense, heavyInfantryHP),
-                Knight = new(3, "Knight", knightAttack, knightDefense, knightHP)};
-            UnitsOrder = Array.Empty<int>();
-        }
+        // private GameClass(int maxPrice, string teamName, int infantryAttack, int infantryDefense, int infantryHP,
+        //     int heavyInfatryAttack, int heavyInfantryDefense, int heavyInfantryHP,
+        //     int knightAttack, int knightDefense, int knightHP)
+        // {
+        //     TeamName = teamName;
+        //     MaxPrice = maxPrice;
+        //     _units = new List<UnitClass>();
+        //     UnitDescriptions = new UnitClass[] { Infantry = new(1, "Infantry", infantryAttack, infantryDefense, infantryHP),
+        //         HeavyInfantry = new(2, "HeavyInfantry", heavyInfatryAttack, heavyInfantryDefense, heavyInfantryHP),
+        //         Knight = new(3, "Knight", knightAttack, knightDefense, knightHP)};
+        //     UnitsOrder = Array.Empty<int>();
+        // }
 
         public void ClearDeadUnits()
         {
             int deadUnits = 0;
             for (int i = 0; i < _units.Count; i++)
             {
-                if (GetUnitCurrentHealth(i) <= 0)
+                if (_units[i].HitPoints <= 0)
                 {
                     _units.RemoveAt(i);
                     UnitsOrder[i] = 0;
@@ -125,58 +120,49 @@ namespace Stack_Combat_Game
             }
         }
 
-        public int GetUnitCurrentHealth(int unitNum)
-        {
-            if (unitNum >= 0 && unitNum < _units.Count)
-                return _units[unitNum].CurrentHP;
-            return -1;
-        }
+        //OLD VARIANT BREACHING SRP
+        // public int GetUnitCurrentHealth(int unitNum)
+        // {
+        //     if (unitNum >= 0 && unitNum < _units.Count)
+        //         return _units[unitNum].CurrentHP;
+        //     return -1;
+        // }
 
-        public int GetUnitMaxHealth(int unitNum)
-        {
-            if (unitNum >= 0 && unitNum < _units.Count)
-                return _units[unitNum].HitPoints;
-            return -1;
-        }
+        // public int GetUnitMaxHealth(int unitNum)
+        // {
+        //     if (unitNum >= 0 && unitNum < _units.Count)
+        //         return _units[unitNum].HitPoints;
+        //     return -1;
+        // }
 
-        public int GetUnitDefense(int unitNum)
-        {
-            if (unitNum >= 0 && unitNum < _units.Count)
-                return _units[unitNum].Defense;
-            return -1;
-        }
+        // public int GetUnitDefense(int unitNum)
+        // {
+        //     if (unitNum >= 0 && unitNum < _units.Count)
+        //         return _units[unitNum].Defense;
+        //     return -1;
+        // }
 
-        public int GetUnitAttack(int unitNum)
-        {
-            if (unitNum >= 0 && unitNum < _units.Count)
-                return _units[unitNum].Attack;
-            return -1;
-        }
+        // public int GetUnitAttack(int unitNum)
+        // {
+        //     if (unitNum >= 0 && unitNum < _units.Count)
+        //         return _units[unitNum].Attack;
+        //     return -1;
+        // }
 
-        public string GetUnitName(int unitNum)
-        {
-            if (unitNum >= 0 && unitNum < _units.Count)
-                return _units[unitNum].UnitName;
-            return "Unknown";
-        }
+        // public string GetUnitName(int unitNum)
+        // {
+        //     if (unitNum >= 0 && unitNum < _units.Count)
+        //         return _units[unitNum].UnitName;
+        //     return "Unknown";
+        // }
 
-        public void AddInfantry(int count)
-        {
-            AddUnit(Infantry, count);
-        }
-        public void AddHeavyInfantry(int count)
-        {
-            AddUnit(HeavyInfantry, count);
-        }
-        public void AddKnight(int count)
-        {
-            AddUnit(Knight, count);
-        }
-        public void AddArcher(int count)
-        {
-            AddUnit(Archer, count);
-        }
-        private void AddUnit(UnitClass unit, int count)
+        // public void GetAttacked(int unitNum, int damage)
+        // {
+        //     if (unitNum >= 0 && unitNum < _units.Count)
+        //         _units[unitNum].CurrentHP -= damage + _units[unitNum].Defense;
+        // }
+
+        public void AddUnit(UnitClass unit, int count)
         {
             
                 for (int i = 0; i < count; i++)
@@ -203,17 +189,11 @@ namespace Stack_Combat_Game
                         int[] units = UnitsOrder;
                         Array.Resize(ref units, UnitsOrder.Length + 1);
                         UnitsOrder = units;
-                        UnitsOrder[^1] = unit.UnidDescriptionId;
+                        UnitsOrder[^1] = unit.UnitDescriptionId;
                         continue;
                     }
                     throw new Exception("Army Cost doesn't relate to the requirements");
                 }
-        }
-
-        public void GetAttacked(int unitNum, int damage)
-        {
-            if (unitNum >= 0 && unitNum < _units.Count)
-                _units[unitNum].CurrentHP -= damage + _units[unitNum].Defense;
         }
     }
 }

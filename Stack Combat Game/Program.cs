@@ -10,7 +10,7 @@ UnitClass[] units = new[]
     new Healer(new(4,"Healer",0,0,1), 1, 3)
 };
 
-GameClass game = GameClass.GetInstance(100, "InteCore2Duo", units);
+GameClass game = GameClass.InitializeInstance(100, "InteCore2Duo", units);
 
 
 var options = new JsonSerializerOptions { WriteIndented = true };

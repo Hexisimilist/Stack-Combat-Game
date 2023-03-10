@@ -6,23 +6,28 @@ namespace Stack_Combat_Game_Unit
     [JsonConverter(typeof(UnitClassJsonConverter))]
     public class UnitClass : ICloneable
     {
-        public int UnidDescriptionId { get; }
-        public string UnitName { get; }
-        public int Attack { get; }
-        public int Defense { get; }
-        public int HitPoints { get; }
+        public int UnitDescriptionId { get; protected set; }
+        public string UnitName { get; protected set; }
+        public int Attack { get; protected set; }
+        public int Defense { get; protected set; }
+        public int HitPoints { get; protected set; }
 
         [JsonIgnore]
         public int CurrentHP { get; set; }
 
         public UnitClass(int id, string name, int attack, int defense, int hp)
         {
-            UnidDescriptionId = id;
+            UnitDescriptionId = id;
             UnitName = name;
             Attack = attack;
             Defense = defense;
             HitPoints = hp;
             CurrentHP = HitPoints;
+        }
+
+        public void ReceiveDamage(int damage)
+        {
+            this.CurrentHP -= damage + this.Defense;
         }
 
         public object Clone()
@@ -34,7 +39,7 @@ namespace Stack_Combat_Game_Unit
     public class Archer : UnitClass, ISpecialAbility
     {
         public Archer(UnitClass unit, int range, int strength) : base(
-            unit.UnidDescriptionId,
+            unit.UnitDescriptionId,
             unit.UnitName,
             unit.Attack,
             unit.Defense,
@@ -52,10 +57,49 @@ namespace Stack_Combat_Game_Unit
         public int AbilityType { get; private set; }
     }
 
+    public class Knight: UnitClass
+    {
+        public Knight(int id, string name, int attack, int defense, int hp) : base(id, name, attack, defense, hp)
+        {
+            UnitDescriptionId = id;
+            UnitName = name;
+            Attack = attack;
+            Defense = defense;
+            HitPoints = hp;
+            CurrentHP = HitPoints;
+        }
+    }
+
+    public class Infantry: UnitClass
+    {
+        public Infantry(int id, string name, int attack, int defense, int hp) : base(id, name, attack, defense, hp)
+        {
+            UnitDescriptionId = id;
+            UnitName = name;
+            Attack = attack;
+            Defense = defense;
+            HitPoints = hp;
+            CurrentHP = HitPoints;
+        }
+    }
+
+    public class HeavyInfantry: UnitClass
+    {
+        public HeavyInfantry(int id, string name, int attack, int defense, int hp) : base(id, name, attack, defense, hp)
+        {
+            UnitDescriptionId = id;
+            UnitName = name;
+            Attack = attack;
+            Defense = defense;
+            HitPoints = hp;
+            CurrentHP = HitPoints;
+        }
+    }
+
     public class Healer : UnitClass, ISpecialAbility
     {
         public Healer(UnitClass unit, int range, int strength) : base(
-            unit.UnidDescriptionId,
+            unit.UnitDescriptionId,
             unit.UnitName,
             unit.Attack,
             unit.Defense,

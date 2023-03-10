@@ -15,7 +15,7 @@ namespace Stack_Combat_Game
         {
             writer.WriteStartObject();
 
-            writer.WriteNumber("UnidDescriptionId", value.UnidDescriptionId);
+            writer.WriteNumber("UnidDescriptionId", value.UnitDescriptionId);
             writer.WriteString("UnitName", value.UnitName);
             writer.WriteNumber("Attack", value.Attack);
             writer.WriteNumber("Defense", value.Defense);
