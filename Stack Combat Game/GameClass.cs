@@ -38,7 +38,7 @@ namespace Stack_Combat_Game
             return instance;
         }
 
-        public static GameClass InitializeInstance(int maxPrice, string teamName, params UnitClass[] units)
+        public static void InitializeInstance(int maxPrice, string teamName, params UnitClass[] units)
         {
             if (instance == null)
             {
@@ -47,7 +47,6 @@ namespace Stack_Combat_Game
                     instance ??= new GameClass(maxPrice, teamName, units);
                 }
             }
-            return instance;
         }
 
         // public static GameClass GetInstance(int maxPrice, string teamName, int infantryAttack, int infantryDefense, int infantryHP,
@@ -65,22 +64,22 @@ namespace Stack_Combat_Game
         //     }
         //     return instance;
         // }
-
+        
         private GameClass(int maxPrice, string teamName, params UnitClass[] units)
         {
             TeamName = teamName;
             MaxPrice = maxPrice;
             _units = new List<UnitClass>();
-            UnitDescriptions = new UnitClass[units.Length];
-            Array.Copy(units, UnitDescriptions, units.Length);
-            UnitsOrder = Array.Empty<int>();
+            UnitDescriptions = new UnitClass[0];
+            //Array.Copy(units, UnitDescriptions, units.Length);
+            //UnitsOrder = Array.Empty<int>();
+            UnitsOrder = new int[_units.Count];
 
-            //TODO Probably to delete the second argument in AddUnit() or to add this variable in parameter of GameClass ctor
             foreach (var item in units)
             {
-                AddUnit(item, 1);
+                AddUnit(item);
             }
-
+            Array.Sort(UnitsOrder);
         }
 
         // private GameClass(int maxPrice, string teamName, int infantryAttack, int infantryDefense, int infantryHP,
@@ -98,17 +97,18 @@ namespace Stack_Combat_Game
 
         public void ClearDeadUnits()
         {
-            int deadUnits = 0;
+            //int deadUnits = 0;
             for (int i = 0; i < _units.Count; i++)
             {
-                if (_units[i].HitPoints <= 0)
+                if (_units[i].CurrentHP <= 0)
                 {
                     _units.RemoveAt(i);
-                    UnitsOrder[i] = 0;
-                    deadUnits++;
+                    UnitsOrder = UnitsOrder.RemoveAt(i);
+                    UnitDescriptions = UnitDescriptions.RemoveAt(i);
+                    //deadUnits++;
                 }
             }
-            int[] temp = new int[UnitsOrder.Length - deadUnits];
+            /*int[] temp = new int[UnitsOrder.Length - deadUnits];
             int n = 0;
             for (int j = 0; j < UnitsOrder.Length; j++)
             {
@@ -118,6 +118,7 @@ namespace Stack_Combat_Game
                 }
                 temp[j] = UnitsOrder[n];
             }
+            UnitsOrder = temp;*/
         }
 
         //OLD VARIANT BREACHING SRP
@@ -162,38 +163,44 @@ namespace Stack_Combat_Game
         //         _units[unitNum].CurrentHP -= damage + _units[unitNum].Defense;
         // }
 
-        public void AddUnit(UnitClass unit, int count)
+        public void AddUnit(params UnitClass[] units)
         {
-            
-                for (int i = 0; i < count; i++)
-                {
+            for (int i = 0; i < units.Length; i++)
+            {
+                AddUnit(units[i]);
+            }
+        }
 
-                    if (unit is ISpecialAbility)
-                    {
-                        var specialUnit = unit as ISpecialAbility;
-                        Price += unit.Attack + unit.Defense + unit.HitPoints
-                            + (specialUnit.Range + specialUnit.Strength) * 2;
-                    }
+        private void AddUnit(UnitClass unit)
+        {
+            #region Breaching SRP
+            /*if (unit is ISpecialAbility)
+            {
+                var specialUnit = unit as ISpecialAbility;
+                Price += unit.Attack + unit.Defense + unit.HitPoints
+                    + (specialUnit.Range + specialUnit.Strength) * 2;
+            }
 
-                    else
-                    {
-                        Price += unit.Defense + unit.Attack + unit.HitPoints;
-                    }
+            else
+            {
+                Price += unit.Price;
+            }*/
+            #endregion
+            //Console.WriteLine(Price);
 
-                Console.WriteLine(Price);
-
-
-                if (Price <= MaxPrice)
-                    {
-                        _units.Add((UnitClass)unit.Clone());
-                        int[] units = UnitsOrder;
-                        Array.Resize(ref units, UnitsOrder.Length + 1);
-                        UnitsOrder = units;
-                        UnitsOrder[^1] = unit.UnitDescriptionId;
-                        continue;
-                    }
-                    throw new Exception("Army Cost doesn't relate to the requirements");
-                }
+            Price += unit.Price;
+            if (Price <= MaxPrice)
+            {
+                _units.Add((UnitClass)unit.Clone());
+                /*int[] units = UnitsOrder;
+                Array.Resize(ref units, UnitsOrder.Length + 1);
+                UnitsOrder = units;
+                UnitsOrder[^1] = unit.UnitDescriptionId;*/
+                UnitDescriptions = UnitDescriptions.Add(unit);
+                UnitsOrder = UnitsOrder.Add(unit.UnitDescriptionId);
+            }
+            else
+                throw new Exception("Army Cost doesn't relate to the requirements");
         }
     }
 }

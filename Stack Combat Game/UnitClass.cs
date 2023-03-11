@@ -11,6 +11,7 @@ namespace Stack_Combat_Game_Unit
         public int Attack { get; protected set; }
         public int Defense { get; protected set; }
         public int HitPoints { get; protected set; }
+        public int Price { get; protected set; }
 
         [JsonIgnore]
         public int CurrentHP { get; set; }
@@ -23,6 +24,7 @@ namespace Stack_Combat_Game_Unit
             Defense = defense;
             HitPoints = hp;
             CurrentHP = HitPoints;
+            Price = defense + attack + hp;
         }
 
         public void ReceiveDamage(int damage)
@@ -48,10 +50,10 @@ namespace Stack_Combat_Game_Unit
             unit.HitPoints
             )
         {
-
             Range = range;
             Strength = strength;
             AbilityType = 1;
+            Price = Attack + Defense + HitPoints + (Range + Strength) * 2;
         }
 
         public int Range { get; private set; }
@@ -78,7 +80,7 @@ namespace Stack_Combat_Game_Unit
     public class HeavyInfantry : UnitClass
     {
         #region Bad DRY Example
-        /*public HeavyInfantry(int id, string name, int attack, int defense, int hp) : base(id, name, attack, defense, hp)
+        /*public HeavyInfantry(int id, string name, int attack, int defense, int hp)
         {
             UnitDescriptionId = id;
             UnitName = name;
@@ -112,14 +114,11 @@ namespace Stack_Combat_Game_Unit
             Range = range;
             Strength = strength;
             AbilityType = 2;
+            Price = Attack + Defense + HitPoints + (Range + Strength) * 2;
         }
 
         public int Range { get; private set; }
         public int Strength { get; private set; }
         public int AbilityType { get; private set; }
     }
-
-
-
-
 }
