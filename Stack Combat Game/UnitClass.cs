@@ -63,12 +63,7 @@ namespace Stack_Combat_Game_Unit
     {
         public Knight(int id, string name, int attack, int defense, int hp) : base(id, name, attack, defense, hp)
         {
-            UnitDescriptionId = id;
-            UnitName = name;
-            Attack = attack;
-            Defense = defense;
-            HitPoints = hp;
-            CurrentHP = HitPoints;
+
         }
     }
 
@@ -76,26 +71,14 @@ namespace Stack_Combat_Game_Unit
     {
         public Infantry(int id, string name, int attack, int defense, int hp) : base(id, name, attack, defense, hp)
         {
-            UnitDescriptionId = id;
-            UnitName = name;
-            Attack = attack;
-            Defense = defense;
-            HitPoints = hp;
-            CurrentHP = HitPoints;
+
         }
     }
 
     public class HeavyInfantry : UnitClass
     {
-
-
-
-
-
-
-
         #region Bad DRY Example
-        public HeavyInfantry(int id, string name, int attack, int defense, int hp) : base(id, name, attack, defense, hp)
+        /*public HeavyInfantry(int id, string name, int attack, int defense, int hp) : base(id, name, attack, defense, hp)
         {
             UnitDescriptionId = id;
             UnitName = name;
@@ -103,14 +86,14 @@ namespace Stack_Combat_Game_Unit
             Defense = defense;
             HitPoints = hp;
             CurrentHP = HitPoints;
-        }
+        }*/
         #endregion
 
         #region Correct DRY Example
-        // public HeavyInfantry(int id, string name, int attack, int defense, int hp) : base(id, name, attack, defense, hp)
-        // {
-            
-        // }
+        public HeavyInfantry(int id, string name, int attack, int defense, int hp) : base(id, name, attack, defense, hp)
+        {
+
+        }
 
         #endregion
     }
