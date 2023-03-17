@@ -5,12 +5,18 @@ namespace Stack_Combat_Game
 {
     public class GameClass
     {
+        public GameClass()
+        {
+
+        }
+
+
         static readonly object Instancelock = new();
         [JsonIgnore]
-        public int Price { get; private set; }
+        public int Price { get;  set; }
         [JsonIgnore]
         private int MaxPrice { get; set; }
-        public string? TeamName { get; private set; }
+        public string? TeamName { get;  set; }
 
 
         public UnitClass[] UnitDescriptions { get; set; }
@@ -34,20 +40,25 @@ namespace Stack_Combat_Game
         public static GameClass GetInstance()
         {
             if (instance == null)
-                throw new Exception("GameClass object has not been initialized!");
-            return instance;
-        }
-
-        public static void InitializeInstance(int maxPrice, string teamName, params UnitClass[] units)
-        {
-            if (instance == null)
             {
                 lock (Instancelock)
                 {
-                    instance ??= new GameClass(maxPrice, teamName, units);
+                    instance ??= new GameClass();
                 }
             }
+            return instance;
         }
+
+        //public static void InitializeInstance(int maxPrice, string teamName, params UnitClass[] units)
+        //{
+        //    if (instance == null)
+        //    {
+        //        lock (Instancelock)
+        //        {
+        //            instance ??= new GameClass(maxPrice, teamName, units);
+        //        }
+        //    }
+        //}
 
         // public static GameClass GetInstance(int maxPrice, string teamName, int infantryAttack, int infantryDefense, int infantryHP,
         //     int heavyInfatryAttack, int heavyInfantryDefense, int heavyInfantryHP,
