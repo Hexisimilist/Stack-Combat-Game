@@ -14,13 +14,13 @@ GameClass game = GameClass.GetInstance();
 game.TeamName = "InteCore2Duo";
 GameClass gameNew = GameClass.GetInstance();
 
-
+game.MaxPrice = 1000;
 
 Console.WriteLine($"{game.TeamName}, {gameNew.TeamName}");
 
 
 
-    game.AddUnit(new Knight(1, "Knight", 7, 0, 30));
+game.AddUnit(new Knight(1, "Knight", 7, 0, 30));
 var options = new JsonSerializerOptions { WriteIndented = true };
 Console.WriteLine(JsonSerializer.Serialize(game, options));
 

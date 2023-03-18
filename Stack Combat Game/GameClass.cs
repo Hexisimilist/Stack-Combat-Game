@@ -5,7 +5,7 @@ namespace Stack_Combat_Game
 {
     public class GameClass
     {
-        public GameClass()
+        GameClass()
         {
 
         }
@@ -13,9 +13,9 @@ namespace Stack_Combat_Game
 
         static readonly object Instancelock = new();
         [JsonIgnore]
-        public int Price { get;  set; }
+        public int Price { get;  private set; }
         [JsonIgnore]
-        private int MaxPrice { get; set; }
+        public int MaxPrice { get; set; }
         public string? TeamName { get;  set; }
 
 
@@ -199,10 +199,14 @@ namespace Stack_Combat_Game
             #endregion
             //Console.WriteLine(Price);
 
+            _units ??= new List<UnitClass>();
+            UnitDescriptions ??= new UnitClass[0];
+            UnitsOrder ??= new int[0];
+
             Price += unit.Price;
             if (Price <= MaxPrice)
             {
-                _units.Add((UnitClass)unit.Clone());
+                _units.Add(unit);
                 /*int[] units = UnitsOrder;
                 Array.Resize(ref units, UnitsOrder.Length + 1);
                 UnitsOrder = units;
