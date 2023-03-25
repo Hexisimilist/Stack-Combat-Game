@@ -1,5 +1,4 @@
 ﻿using Stack_Combat_Game;
-using Stack_Combat_Game_Unit;
 using System.Text.Json;
 
 UnitClass[] units = new[]
@@ -10,17 +9,28 @@ UnitClass[] units = new[]
     new Healer(new(4,"Healer",0,0,1), 1, 3)
 };
 
-GameClass game = GameClass.GetInstance();
-game.TeamName = "InteCore2Duo";
-GameClass gameNew = GameClass.GetInstance();
 
-game.MaxPrice = 1000;
+ArmyClass game = new();
+game.MaxPrice = 10000000;
+game.TeamName = "ass";
 
-Console.WriteLine($"{game.TeamName}, {gameNew.TeamName}");
+for (int i = 0; i < units.Length; i++)
+{
+    game.AddUnit(units[i]);
+}
+
+//game.AddUnit(units);
+//Console.WriteLine(game.TeamName);
+//game.TeamName = "InteCore2Duo";
+//ArmyClass gameNew = ArmyClass.GetInstance();
+
+//ame.MaxPrice = 1000;
+
+//Console.WriteLine($"{game.TeamName}, {gameNew.TeamName}");
 
 
 
-game.AddUnit(new Knight(1, "Knight", 7, 0, 30));
+//game.AddUnit(new Knight(1, "Knight", 7, 0, 30));
 var options = new JsonSerializerOptions { WriteIndented = true };
 Console.WriteLine(JsonSerializer.Serialize(game, options));
 

@@ -1,7 +1,6 @@
-﻿using Stack_Combat_Game;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace Stack_Combat_Game_Unit
+namespace Stack_Combat_Game
 {
     [JsonConverter(typeof(UnitClassJsonConverter))]
     public class UnitClass : ICloneable
@@ -59,6 +58,18 @@ namespace Stack_Combat_Game_Unit
         public int Range { get; private set; }
         public int Strength { get; private set; }
         public int AbilityType { get; private set; }
+        public void UseAbility(ArmyClass friendly, ArmyClass enemies)
+        {
+            Random rand = new();
+            int range = Range;
+            if (Range > enemies.UnitDescriptions.Count)
+                range = enemies.UnitDescriptions.Count;
+            for (int i = 1; i < range; i++)
+            {
+                if (rand.Next(2) == 1)
+                    enemies.EditUnit(i).CurrentHP -= Strength;
+            }
+        }
     }
 
     public class Knight : UnitClass
@@ -100,6 +111,44 @@ namespace Stack_Combat_Game_Unit
         #endregion
     }
 
+    public class Warlock : UnitClass, ISpecialAbility
+    {
+        public Warlock(UnitClass unit, int range, int strength) : base(
+            unit.UnitDescriptionId,
+            unit.UnitName,
+            unit.Attack,
+            unit.Defense,
+            unit.HitPoints
+            )
+        {
+            Range = range;
+            Strength = strength;
+            AbilityType = 1;
+            Price = Attack + Defense + HitPoints + (Range + Strength) * 2;
+        }
+
+        public int Range { get; private set; }
+        public int Strength { get; private set; }
+        public int AbilityType { get; private set; }
+
+        public void UseAbility(ArmyClass friendly, ArmyClass enemies)
+        {
+            Random rand = new();
+            int range = Range;
+            if (Range > friendly.UnitDescriptions.Count)
+                range = friendly.UnitDescriptions.Count;
+            for (int i = 1; i < range; i++)
+            {
+                if (rand.Next(2) == 1)
+                    if (friendly.UnitDescriptions[i].CurrentHP > 0)
+                    {
+                        friendly.MaxPrice += friendly.UnitDescriptions[i].Price;
+                        friendly.AddUnit((UnitClass)friendly.UnitDescriptions[i].Clone());
+                    }
+            }
+        }
+    }
+
     public class Healer : UnitClass, ISpecialAbility
     {
         public Healer(UnitClass unit, int range, int strength) : base(
@@ -120,5 +169,19 @@ namespace Stack_Combat_Game_Unit
         public int Range { get; private set; }
         public int Strength { get; private set; }
         public int AbilityType { get; private set; }
+
+        public void UseAbility(ArmyClass friendly, ArmyClass enemies)
+        {
+            Random rand = new();
+            int range = Range;
+            if (Range > friendly.UnitDescriptions.Count)
+                range = friendly.UnitDescriptions.Count;
+            for (int i = 1; i < range; i++)
+            {
+                if (rand.Next(2) == 1)
+                    if (friendly.UnitDescriptions[i].CurrentHP < friendly.UnitDescriptions[i].HitPoints)
+                        friendly.EditUnit(i).CurrentHP += Strength;
+            }
+        }
     }
 }

@@ -16,5 +16,7 @@ namespace Stack_Combat_Game
         [JsonPropertyName("SpecialAbilityType")]
         [JsonPropertyOrder(0)]
         public int AbilityType { get; }
+
+        public void UseAbility(ArmyClass friendly, ArmyClass enemies);
     }
 }
